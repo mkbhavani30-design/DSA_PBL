@@ -27,7 +27,7 @@
 #endif
 
 #define RECV_BUF_SIZE 16384
-#define BODY_BUF_SIZE 65536
+#define BODY_BUF_SIZE 131072
 
 static char g_state_file[512] = "../db/bookings_state.json";
 
@@ -109,68 +109,6 @@ static int parse_string_field(const char* body, const char* key, char* out, size
     return 1;
 }
 
-static void save_booking_state(void) {
-    if (g_state_file[0] == '\0') return;
-    FILE* fp = fopen(g_state_file, "wb");
-    if (!fp) return;
-
-    fprintf(fp, "{\n  \"booked_room_ids\": [");
-    int total = engine_get_room_count();
-    int first = 1;
-    for (int i = 0; i < total; i++) {
-        if (!engine_is_room_free(i)) {
-            fprintf(fp, "%s\"%s\"", first ? "\n    " : ",\n    ", engine_get_room_id(i));
-            first = 0;
-        }
-    }
-    fprintf(fp, "%s]\n}\n", first ? "" : "\n  ");
-    fclose(fp);
-}
-
-static void restore_booking_state(void) {
-    if (g_state_file[0] == '\0') return;
-    FILE* fp = fopen(g_state_file, "rb");
-    if (!fp) return;
-
-    fseek(fp, 0, SEEK_END);
-    long sz = ftell(fp);
-    rewind(fp);
-    if (sz <= 0 || sz > 1048576) {
-        fclose(fp);
-        return;
-    }
-
-    char* buf = (char*)malloc((size_t)sz + 1);
-    if (!buf) {
-        fclose(fp);
-        return;
-    }
-    size_t n = fread(buf, 1, (size_t)sz, fp);
-    buf[n] = '\0';
-    fclose(fp);
-
-    const char* arr = strstr(buf, "\"booked_room_ids\"");
-    if (arr) {
-        const char* p = strchr(arr, '[');
-        const char* end = p ? strchr(p, ']') : NULL;
-        while (p && end && p < end) {
-            const char* q1 = strchr(p, '"');
-            if (!q1 || q1 >= end) break;
-            const char* q2 = strchr(q1 + 1, '"');
-            if (!q2 || q2 > end) break;
-            char rid[64];
-            size_t len = (size_t)(q2 - (q1 + 1));
-            if (len >= sizeof(rid)) len = sizeof(rid) - 1;
-            memcpy(rid, q1 + 1, len);
-            rid[len] = '\0';
-            engine_book_by_str_id(rid);
-            p = q2 + 1;
-        }
-    }
-
-    free(buf);
-}
-
 static char* read_file_alloc(const char* path, size_t* out_len) {
     FILE* fp = fopen(path, "rb");
     if (!fp) return NULL;
@@ -229,23 +167,6 @@ static void send_json_response(sock_t client, int status_code, const char* statu
     }
 }
 
-static void append_path_json_array(char* dst, size_t dst_sz, const char* pipe_path) {
-    size_t cur = strlen(dst);
-    cur += (size_t)snprintf(dst + cur, dst_sz - cur, "[");
-    if (pipe_path && pipe_path[0] != '\0') {
-        char copy[4096];
-        snprintf(copy, sizeof(copy), "%s", pipe_path);
-        char* tok = strtok(copy, "|");
-        int first = 1;
-        while (tok) {
-            cur += (size_t)snprintf(dst + cur, dst_sz - cur, "%s\"%s\"", first ? "" : ",", tok);
-            first = 0;
-            tok = strtok(NULL, "|");
-        }
-    }
-    snprintf(dst + cur, dst_sz - cur, "]");
-}
-
 static void handle_client(sock_t client, const char* map_path) {
     char req_buf[RECV_BUF_SIZE];
 #ifdef _WIN32
@@ -292,14 +213,19 @@ static void handle_client(sock_t client, const char* map_path) {
     char resp[BODY_BUF_SIZE];
 
     if (strcmp(method, "GET") == 0 && strcmp(path, "/api/health") == 0) {
+        char day[16] = "MON", shift[16] = "MORNING";
+        get_query_param(query, "day", day, sizeof(day));
+        get_query_param(query, "shift", shift, sizeof(shift));
+
         int total = engine_get_room_count();
         int free_cnt = 0;
         for (int i = 0; i < total; i++) {
-            if (engine_is_room_free(i)) free_cnt++;
+            if (engine_is_room_free_at(i, day, shift)) free_cnt++;
         }
         snprintf(resp, sizeof(resp),
-                 "{\"status\":\"ok\",\"total_rooms\":%d,\"free_rooms\":%d,\"booked_rooms\":%d}",
-                 total, free_cnt, total - free_cnt);
+                 "{\"status\":\"ok\",\"day\":\"%s\",\"shift\":\"%s\","
+                 "\"total_rooms\":%d,\"free_rooms\":%d,\"booked_rooms\":%d}",
+                 day, shift, total, free_cnt, total - free_cnt);
         send_json_response(client, 200, "OK", resp);
 
     } else if (strcmp(method, "GET") == 0 && strcmp(path, "/api/map") == 0) {
@@ -313,125 +239,93 @@ static void handle_client(sock_t client, const char* map_path) {
         }
 
     } else if (strcmp(method, "GET") == 0 && strcmp(path, "/api/rooms") == 0) {
-        char f_bldg[32] = "";
-        char f_type[32] = "";
-        char f_free[16] = "";
+        char day[16] = "MON", shift[16] = "MORNING";
+        char f_bldg[32] = "", f_type[32] = "", f_free[16] = "";
+        get_query_param(query, "day", day, sizeof(day));
+        get_query_param(query, "shift", shift, sizeof(shift));
         get_query_param(query, "building_id", f_bldg, sizeof(f_bldg));
         get_query_param(query, "room_type", f_type, sizeof(f_type));
         get_query_param(query, "only_free", f_free, sizeof(f_free));
         int only_free = (strcmp(f_free, "true") == 0 || strcmp(f_free, "1") == 0);
 
-        int total = engine_get_room_count();
-        size_t pos = (size_t)snprintf(resp, sizeof(resp), "{\"rooms\":[");
-        int first = 1;
-        int matched = 0;
-
-        for (int i = 0; i < total; i++) {
-            const char* id = engine_get_room_id(i);
-            const char* name = engine_get_room_name(i);
-            const char* type = engine_get_room_type(i);
-            const char* bldg = engine_get_room_building(i);
-            int floor = engine_get_room_floor(i);
-            int is_free = engine_is_room_free(i);
-
-            if (f_bldg[0] != '\0' && strcmp(bldg, f_bldg) != 0) continue;
-            if (f_type[0] != '\0' && strcmp(type, f_type) != 0) continue;
-            if (only_free && !is_free) continue;
-
-            if (pos + 256 < sizeof(resp)) {
-                pos += (size_t)snprintf(
-                    resp + pos,
-                    sizeof(resp) - pos,
-                    "%s{\"slot\":%d,\"id\":\"%s\",\"name\":\"%s\",\"type\":\"%s\","
-                    "\"building_id\":\"%s\",\"floor\":%d,\"is_free\":%s}",
-                    first ? "" : ",",
-                    i, id, name, type, bldg, floor, is_free ? "true" : "false"
-                );
-                first = 0;
-                matched++;
-            }
-        }
-
-        snprintf(resp + pos, sizeof(resp) - pos, "],\"count\":%d}", matched);
+        engine_list_rooms_json(day, shift, f_bldg, f_type, only_free, resp, sizeof(resp));
         send_json_response(client, 200, "OK", resp);
 
     } else if (strcmp(method, "POST") == 0 && strcmp(path, "/api/rooms/book") == 0) {
-        char room_id[64] = "";
-        if (!parse_string_field(body, "room_id", room_id, sizeof(room_id)) || !engine_book_by_str_id(room_id)) {
+        char room_id[64] = "", day[16] = "MON", shift[16] = "MORNING";
+        parse_string_field(body, "day", day, sizeof(day));
+        parse_string_field(body, "shift", shift, sizeof(shift));
+        if (!parse_string_field(body, "room_id", room_id, sizeof(room_id)) ||
+            !engine_book_room_at(room_id, day, shift)) {
             send_json_response(client, 404, "Not Found", "{\"error\":\"Room not found or booking failed\"}");
         } else {
-            save_booking_state();
-            snprintf(resp, sizeof(resp), "{\"status\":\"booked\",\"room_id\":\"%s\"}", room_id);
+            engine_save_state(g_state_file);
+            snprintf(resp, sizeof(resp),
+                     "{\"status\":\"booked\",\"room_id\":\"%s\",\"day\":\"%s\",\"shift\":\"%s\"}",
+                     room_id, day, shift);
             send_json_response(client, 200, "OK", resp);
         }
 
     } else if (strcmp(method, "POST") == 0 && strcmp(path, "/api/rooms/release") == 0) {
-        char room_id[64] = "";
-        if (!parse_string_field(body, "room_id", room_id, sizeof(room_id)) || !engine_release_by_str_id(room_id)) {
+        char room_id[64] = "", day[16] = "MON", shift[16] = "MORNING";
+        parse_string_field(body, "day", day, sizeof(day));
+        parse_string_field(body, "shift", shift, sizeof(shift));
+        if (!parse_string_field(body, "room_id", room_id, sizeof(room_id)) ||
+            !engine_release_room_at(room_id, day, shift)) {
             send_json_response(client, 404, "Not Found", "{\"error\":\"Room not found or release failed\"}");
         } else {
-            save_booking_state();
-            snprintf(resp, sizeof(resp), "{\"status\":\"released\",\"room_id\":\"%s\"}", room_id);
+            engine_save_state(g_state_file);
+            snprintf(resp, sizeof(resp),
+                     "{\"status\":\"released\",\"room_id\":\"%s\",\"day\":\"%s\",\"shift\":\"%s\"}",
+                     room_id, day, shift);
             send_json_response(client, 200, "OK", resp);
         }
 
     } else if (strcmp(method, "POST") == 0 && strcmp(path, "/api/library/overflow") == 0) {
+        char day[16] = "MON", shift[16] = "MORNING";
+        parse_string_field(body, "day", day, sizeof(day));
+        parse_string_field(body, "shift", shift, sizeof(shift));
         int full = parse_bool_field(body, "library_full", 1);
-        engine_set_library_full(full);
-        save_booking_state();
-        snprintf(resp, sizeof(resp), "{\"status\":\"updated\",\"library_full\":%s}", full ? "true" : "false");
+        engine_set_library_full_at(day, shift, full);
+        engine_save_state(g_state_file);
+        snprintf(resp, sizeof(resp),
+                 "{\"status\":\"updated\",\"day\":\"%s\",\"shift\":\"%s\",\"library_full\":%s}",
+                 day, shift, full ? "true" : "false");
         send_json_response(client, 200, "OK", resp);
 
     } else if (strcmp(method, "GET") == 0 && strcmp(path, "/api/nearest-room") == 0) {
         char start_id[64] = "LIB_F1_HALL_01";
-        char excl_bldg[32] = "";
-        char auto_book_str[16] = "";
-        get_query_param(query, "start", start_id, sizeof(start_id));
-        get_query_param(query, "exclude_building", excl_bldg, sizeof(excl_bldg));
-        get_query_param(query, "auto_book", auto_book_str, sizeof(auto_book_str));
-        int auto_book = (strcmp(auto_book_str, "true") == 0 || strcmp(auto_book_str, "1") == 0);
+        char day[16] = "MON", shift[16] = "MORNING";
+        char prefer_bldg[32] = "";
+        char stairs_str[16] = "", floor_str[16] = "", book_str[16] = "";
 
-        double cost = -1.0;
-        char path_pipe[4096] = "";
-        int slot = engine_find_nearest_free_room(
-            start_id,
-            excl_bldg,
-            NULL,
-            0,
-            &cost,
-            path_pipe,
-            sizeof(path_pipe)
+        get_query_param(query, "start", start_id, sizeof(start_id));
+        get_query_param(query, "day", day, sizeof(day));
+        get_query_param(query, "shift", shift, sizeof(shift));
+        get_query_param(query, "prefer_building", prefer_bldg, sizeof(prefer_bldg));
+        get_query_param(query, "prefer_stairs", stairs_str, sizeof(stairs_str));
+        get_query_param(query, "prefer_lower_floor", floor_str, sizeof(floor_str));
+        get_query_param(query, "auto_book", book_str, sizeof(book_str));
+
+        int prefer_stairs = (strcmp(stairs_str, "true") == 0 || strcmp(stairs_str, "1") == 0);
+        int prefer_lower_floor = (strcmp(floor_str, "true") == 0 || strcmp(floor_str, "1") == 0);
+        int auto_book = (strcmp(book_str, "true") == 0 || strcmp(book_str, "1") == 0);
+
+        int ok = engine_find_overflow_json(
+            start_id, day, shift, prefer_bldg,
+            prefer_stairs, prefer_lower_floor, auto_book,
+            resp, sizeof(resp)
         );
 
-        if (slot < 0) {
-            send_json_response(client, 404, "Not Found", "{\"error\":\"No free study rooms available\"}");
+        if (!ok) {
+            send_json_response(client, 404, "Not Found", "{\"error\":\"No free rooms available for given criteria\"}");
         } else {
-            if (auto_book) {
-                engine_book_room(slot);
-                save_booking_state();
-            }
-            size_t pos = (size_t)snprintf(
-                resp,
-                sizeof(resp),
-                "{\"slot\":%d,\"room_id\":\"%s\",\"room_name\":\"%s\",\"room_type\":\"%s\","
-                "\"building_id\":\"%s\",\"floor\":%d,\"cost\":%.2f,\"booked\":%s,\"path\":",
-                slot,
-                engine_get_room_id(slot),
-                engine_get_room_name(slot),
-                engine_get_room_type(slot),
-                engine_get_room_building(slot),
-                engine_get_room_floor(slot),
-                cost,
-                auto_book ? "true" : "false"
-            );
-            append_path_json_array(resp + pos, sizeof(resp) - pos, path_pipe);
-            snprintf(resp + strlen(resp), sizeof(resp) - strlen(resp), "}");
+            if (auto_book) engine_save_state(g_state_file);
             send_json_response(client, 200, "OK", resp);
         }
 
     } else if (strcmp(method, "GET") == 0 && strcmp(path, "/api/route") == 0) {
-        char start_id[64] = "";
-        char target_id[64] = "";
+        char start_id[64] = "", target_id[64] = "";
         get_query_param(query, "start", start_id, sizeof(start_id));
         get_query_param(query, "target", target_id, sizeof(target_id));
 
@@ -442,13 +336,20 @@ static void handle_client(sock_t client, const char* map_path) {
             send_json_response(client, 404, "Not Found", "{\"error\":\"Route not found\"}");
         } else {
             size_t pos = (size_t)snprintf(
-                resp,
-                sizeof(resp),
-                "{\"start\":\"%s\",\"target\":\"%s\",\"cost\":%.2f,\"steps\":%d,\"path\":",
+                resp, sizeof(resp),
+                "{\"start\":\"%s\",\"target\":\"%s\",\"cost\":%.2f,\"steps\":%d,\"path\":[",
                 start_id, target_id, cost, steps
             );
-            append_path_json_array(resp + pos, sizeof(resp) - pos, path_pipe);
-            snprintf(resp + strlen(resp), sizeof(resp) - strlen(resp), "}");
+            char copy[4096];
+            snprintf(copy, sizeof(copy), "%s", path_pipe);
+            char* tok = strtok(copy, "|");
+            int first = 1;
+            while (tok) {
+                pos += (size_t)snprintf(resp + pos, sizeof(resp) - pos, "%s\"%s\"", first ? "" : ",", tok);
+                first = 0;
+                tok = strtok(NULL, "|");
+            }
+            snprintf(resp + pos, sizeof(resp) - pos, "]}");
             send_json_response(client, 200, "OK", resp);
         }
 
@@ -468,7 +369,7 @@ int backend_run(const BackendConfig* cfg) {
         fprintf(stderr, "Failed to initialize engine with map: %s\n", cfg->map_path);
         return 1;
     }
-    restore_booking_state();
+    engine_load_state(g_state_file);
 
 #ifdef _WIN32
     WSADATA wsa;
@@ -523,7 +424,8 @@ int backend_run(const BackendConfig* cfg) {
     }
 
     printf("C Backend listening on http://localhost:%d\n", cfg->port);
-    printf("Loaded map: %s (%d rooms)\n", cfg->map_path, engine_get_room_count());
+    printf("Loaded map: %s (%d rooms with 5-day Morning/Afternoon schedules)\n",
+           cfg->map_path, engine_get_room_count());
 
     while (1) {
         sock_t client = accept(srv, NULL, NULL);
@@ -531,7 +433,7 @@ int backend_run(const BackendConfig* cfg) {
         handle_client(client, cfg->map_path);
     }
 
-    save_booking_state();
+    engine_save_state(g_state_file);
     SOCK_CLOSE(srv);
 #ifdef _WIN32
     WSACleanup();

@@ -7,6 +7,7 @@ ENGINE_SRCS := \
 	../engine/campus_router.c \
 	../engine/segment_tree.c \
 	../engine/map_loader.c \
+	../engine/timetable.c \
 	../engine/engine_api.c
 
 BACKEND_SRCS := server.c

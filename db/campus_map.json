@@ -1,0 +1,1127 @@
+{
+  "campus_name": "Campus Overflow Study Room Navigation Map",
+  "buildings": [
+    {
+      "building_id": "LIB",
+      "building_name": "Central Library",
+      "floors": [
+        {
+          "floor_number": 1,
+          "nodes": [
+            {
+              "id": "LIB_F1_STAIR_01",
+              "type": "stairs",
+              "x": 5,
+              "y": 10,
+              "name": "Library Stairs F1",
+              "connections": [
+                "LIB_F1_HALL_01",
+                "LIB_F2_STAIR_01"
+              ]
+            },
+            {
+              "id": "LIB_F1_ELEV_01",
+              "type": "elevator",
+              "x": 5,
+              "y": 20,
+              "name": "Library Elevator F1",
+              "connections": [
+                "LIB_F1_HALL_02",
+                "LIB_F2_ELEV_01"
+              ]
+            },
+            {
+              "id": "LIB_F1_HALL_01",
+              "type": "hallway",
+              "x": 10,
+              "y": 10,
+              "connections": [
+                "LIB_F1_STAIR_01",
+                "LIB_F1_HALL_02",
+                "LIB_F1_STUDY_01",
+                "LIB_F1_STUDY_02",
+                "LIB_F1_EXIT_A"
+              ]
+            },
+            {
+              "id": "LIB_F1_HALL_02",
+              "type": "hallway",
+              "x": 10,
+              "y": 20,
+              "connections": [
+                "LIB_F1_ELEV_01",
+                "LIB_F1_HALL_01",
+                "LIB_F1_HALL_03",
+                "LIB_F1_REST_01"
+              ]
+            },
+            {
+              "id": "LIB_F1_HALL_03",
+              "type": "hallway",
+              "x": 20,
+              "y": 20,
+              "connections": [
+                "LIB_F1_HALL_02",
+                "LIB_F1_STUDY_03",
+                "LIB_F1_EXIT_B"
+              ]
+            },
+            {
+              "id": "LIB_F1_STUDY_01",
+              "type": "study_room",
+              "x": 10,
+              "y": 5,
+              "name": "Library Reading Zone 101",
+              "connections": [
+                "LIB_F1_HALL_01"
+              ]
+            },
+            {
+              "id": "LIB_F1_STUDY_02",
+              "type": "study_room",
+              "x": 15,
+              "y": 5,
+              "name": "Library Reading Zone 102",
+              "connections": [
+                "LIB_F1_HALL_01"
+              ]
+            },
+            {
+              "id": "LIB_F1_STUDY_03",
+              "type": "study_room",
+              "x": 20,
+              "y": 25,
+              "name": "Library Quiet Hall 103",
+              "connections": [
+                "LIB_F1_HALL_03"
+              ]
+            },
+            {
+              "id": "LIB_F1_REST_01",
+              "type": "restroom",
+              "x": 10,
+              "y": 25,
+              "name": "Library Restroom F1",
+              "connections": [
+                "LIB_F1_HALL_02"
+              ]
+            },
+            {
+              "id": "LIB_F1_EXIT_A",
+              "type": "corridor",
+              "x": 30,
+              "y": 10,
+              "name": "Library West Walkway",
+              "connections": [
+                "LIB_F1_HALL_01",
+                "DEPT_A_F1_ENTRANCE"
+              ]
+            },
+            {
+              "id": "LIB_F1_EXIT_B",
+              "type": "corridor",
+              "x": 30,
+              "y": 20,
+              "name": "Library East Walkway",
+              "connections": [
+                "LIB_F1_HALL_03",
+                "DEPT_B_F1_ENTRANCE"
+              ]
+            }
+          ]
+        },
+        {
+          "floor_number": 2,
+          "nodes": [
+            {
+              "id": "LIB_F2_STAIR_01",
+              "type": "stairs",
+              "x": 5,
+              "y": 10,
+              "name": "Library Stairs F2",
+              "connections": [
+                "LIB_F2_HALL_01",
+                "LIB_F1_STAIR_01"
+              ]
+            },
+            {
+              "id": "LIB_F2_ELEV_01",
+              "type": "elevator",
+              "x": 5,
+              "y": 20,
+              "name": "Library Elevator F2",
+              "connections": [
+                "LIB_F2_HALL_02",
+                "LIB_F1_ELEV_01"
+              ]
+            },
+            {
+              "id": "LIB_F2_HALL_01",
+              "type": "hallway",
+              "x": 10,
+              "y": 10,
+              "connections": [
+                "LIB_F2_STAIR_01",
+                "LIB_F2_HALL_02",
+                "LIB_F2_STUDY_01",
+                "LIB_F2_STUDY_02"
+              ]
+            },
+            {
+              "id": "LIB_F2_HALL_02",
+              "type": "hallway",
+              "x": 10,
+              "y": 20,
+              "connections": [
+                "LIB_F2_ELEV_01",
+                "LIB_F2_HALL_01",
+                "LIB_F2_HALL_03",
+                "LIB_F2_REST_01"
+              ]
+            },
+            {
+              "id": "LIB_F2_HALL_03",
+              "type": "hallway",
+              "x": 20,
+              "y": 20,
+              "connections": [
+                "LIB_F2_HALL_02",
+                "LIB_F2_STUDY_03"
+              ]
+            },
+            {
+              "id": "LIB_F2_STUDY_01",
+              "type": "study_room",
+              "x": 10,
+              "y": 5,
+              "name": "Library Reading Zone 201",
+              "connections": [
+                "LIB_F2_HALL_01"
+              ]
+            },
+            {
+              "id": "LIB_F2_STUDY_02",
+              "type": "study_room",
+              "x": 15,
+              "y": 5,
+              "name": "Library Reading Zone 202",
+              "connections": [
+                "LIB_F2_HALL_01"
+              ]
+            },
+            {
+              "id": "LIB_F2_STUDY_03",
+              "type": "study_room",
+              "x": 20,
+              "y": 25,
+              "name": "Library Quiet Hall 203",
+              "connections": [
+                "LIB_F2_HALL_03"
+              ]
+            },
+            {
+              "id": "LIB_F2_REST_01",
+              "type": "restroom",
+              "x": 10,
+              "y": 25,
+              "name": "Library Restroom F2",
+              "connections": [
+                "LIB_F2_HALL_02"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "building_id": "DEPT_A",
+      "building_name": "Department A (CSE & IT Block)",
+      "floors": [
+        {
+          "floor_number": 1,
+          "nodes": [
+            {
+              "id": "DEPT_A_F1_STAIR_01",
+              "type": "stairs",
+              "x": 105,
+              "y": 10,
+              "name": "DEPT_A Stairs F1",
+              "connections": [
+                "DEPT_A_F1_HALL_01",
+                "DEPT_A_F2_STAIR_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_ELEV_01",
+              "type": "elevator",
+              "x": 105,
+              "y": 20,
+              "name": "DEPT_A Elevator F1",
+              "connections": [
+                "DEPT_A_F1_HALL_02",
+                "DEPT_A_F2_ELEV_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_HALL_01",
+              "type": "hallway",
+              "x": 110,
+              "y": 10,
+              "connections": [
+                "DEPT_A_F1_STAIR_01",
+                "DEPT_A_F1_HALL_02",
+                "DEPT_A_F1_HALL_03",
+                "DEPT_A_F1_ENTRANCE",
+                "DEPT_A_F1_CLASS_01",
+                "DEPT_A_F1_CLASS_02"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_HALL_02",
+              "type": "hallway",
+              "x": 110,
+              "y": 20,
+              "connections": [
+                "DEPT_A_F1_ELEV_01",
+                "DEPT_A_F1_HALL_01",
+                "DEPT_A_F1_HALL_04",
+                "DEPT_A_F1_REST_01",
+                "DEPT_A_F1_ENTRANCE",
+                "DEPT_A_F1_LAB_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_HALL_03",
+              "type": "hallway",
+              "x": 125,
+              "y": 10,
+              "connections": [
+                "DEPT_A_F1_HALL_01",
+                "DEPT_A_F1_CLASS_03",
+                "DEPT_A_F1_CLASS_04",
+                "DEPT_A_F1_CLASS_05"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_HALL_04",
+              "type": "hallway",
+              "x": 125,
+              "y": 20,
+              "connections": [
+                "DEPT_A_F1_HALL_02",
+                "DEPT_A_F1_LAB_02",
+                "DEPT_A_F1_LAB_03"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_REST_01",
+              "type": "restroom",
+              "x": 110,
+              "y": 25,
+              "name": "DEPT_A Restroom F1",
+              "connections": [
+                "DEPT_A_F1_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_ENTRANCE",
+              "type": "entrance",
+              "x": 100,
+              "y": 15,
+              "name": "Department A (CSE & IT Block) Main Entrance",
+              "connections": [
+                "LIB_F1_EXIT_A",
+                "DEPT_A_F1_HALL_01",
+                "DEPT_A_F1_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_CLASS_01",
+              "type": "classroom",
+              "x": 114,
+              "y": 5,
+              "name": "DEPT_A Classroom 101",
+              "connections": [
+                "DEPT_A_F1_HALL_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_CLASS_02",
+              "type": "classroom",
+              "x": 118,
+              "y": 5,
+              "name": "DEPT_A Classroom 102",
+              "connections": [
+                "DEPT_A_F1_HALL_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_CLASS_03",
+              "type": "classroom",
+              "x": 122,
+              "y": 5,
+              "name": "DEPT_A Classroom 103",
+              "connections": [
+                "DEPT_A_F1_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_CLASS_04",
+              "type": "classroom",
+              "x": 126,
+              "y": 5,
+              "name": "DEPT_A Classroom 104",
+              "connections": [
+                "DEPT_A_F1_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_CLASS_05",
+              "type": "classroom",
+              "x": 130,
+              "y": 5,
+              "name": "DEPT_A Classroom 105",
+              "connections": [
+                "DEPT_A_F1_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_LAB_01",
+              "type": "lab",
+              "x": 120,
+              "y": 25,
+              "name": "DEPT_A Lab 101",
+              "connections": [
+                "DEPT_A_F1_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_LAB_02",
+              "type": "lab",
+              "x": 125,
+              "y": 25,
+              "name": "DEPT_A Lab 102",
+              "connections": [
+                "DEPT_A_F1_HALL_04"
+              ]
+            },
+            {
+              "id": "DEPT_A_F1_LAB_03",
+              "type": "lab",
+              "x": 130,
+              "y": 25,
+              "name": "DEPT_A Lab 103",
+              "connections": [
+                "DEPT_A_F1_HALL_04"
+              ]
+            }
+          ]
+        },
+        {
+          "floor_number": 2,
+          "nodes": [
+            {
+              "id": "DEPT_A_F2_STAIR_01",
+              "type": "stairs",
+              "x": 105,
+              "y": 10,
+              "name": "DEPT_A Stairs F2",
+              "connections": [
+                "DEPT_A_F2_HALL_01",
+                "DEPT_A_F1_STAIR_01",
+                "DEPT_A_F3_STAIR_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_ELEV_01",
+              "type": "elevator",
+              "x": 105,
+              "y": 20,
+              "name": "DEPT_A Elevator F2",
+              "connections": [
+                "DEPT_A_F2_HALL_02",
+                "DEPT_A_F1_ELEV_01",
+                "DEPT_A_F3_ELEV_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_HALL_01",
+              "type": "hallway",
+              "x": 110,
+              "y": 10,
+              "connections": [
+                "DEPT_A_F2_STAIR_01",
+                "DEPT_A_F2_HALL_02",
+                "DEPT_A_F2_HALL_03",
+                "DEPT_A_F2_CLASS_01",
+                "DEPT_A_F2_CLASS_02"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_HALL_02",
+              "type": "hallway",
+              "x": 110,
+              "y": 20,
+              "connections": [
+                "DEPT_A_F2_ELEV_01",
+                "DEPT_A_F2_HALL_01",
+                "DEPT_A_F2_HALL_04",
+                "DEPT_A_F2_REST_01",
+                "DEPT_A_F2_LAB_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_HALL_03",
+              "type": "hallway",
+              "x": 125,
+              "y": 10,
+              "connections": [
+                "DEPT_A_F2_HALL_01",
+                "DEPT_A_F2_CLASS_03",
+                "DEPT_A_F2_CLASS_04",
+                "DEPT_A_F2_CLASS_05"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_HALL_04",
+              "type": "hallway",
+              "x": 125,
+              "y": 20,
+              "connections": [
+                "DEPT_A_F2_HALL_02",
+                "DEPT_A_F2_LAB_02",
+                "DEPT_A_F2_LAB_03"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_REST_01",
+              "type": "restroom",
+              "x": 110,
+              "y": 25,
+              "name": "DEPT_A Restroom F2",
+              "connections": [
+                "DEPT_A_F2_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_CLASS_01",
+              "type": "classroom",
+              "x": 114,
+              "y": 5,
+              "name": "DEPT_A Classroom 201",
+              "connections": [
+                "DEPT_A_F2_HALL_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_CLASS_02",
+              "type": "classroom",
+              "x": 118,
+              "y": 5,
+              "name": "DEPT_A Classroom 202",
+              "connections": [
+                "DEPT_A_F2_HALL_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_CLASS_03",
+              "type": "classroom",
+              "x": 122,
+              "y": 5,
+              "name": "DEPT_A Classroom 203",
+              "connections": [
+                "DEPT_A_F2_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_CLASS_04",
+              "type": "classroom",
+              "x": 126,
+              "y": 5,
+              "name": "DEPT_A Classroom 204",
+              "connections": [
+                "DEPT_A_F2_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_CLASS_05",
+              "type": "classroom",
+              "x": 130,
+              "y": 5,
+              "name": "DEPT_A Classroom 205",
+              "connections": [
+                "DEPT_A_F2_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_LAB_01",
+              "type": "lab",
+              "x": 120,
+              "y": 25,
+              "name": "DEPT_A Lab 201",
+              "connections": [
+                "DEPT_A_F2_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_LAB_02",
+              "type": "lab",
+              "x": 125,
+              "y": 25,
+              "name": "DEPT_A Lab 202",
+              "connections": [
+                "DEPT_A_F2_HALL_04"
+              ]
+            },
+            {
+              "id": "DEPT_A_F2_LAB_03",
+              "type": "lab",
+              "x": 130,
+              "y": 25,
+              "name": "DEPT_A Lab 203",
+              "connections": [
+                "DEPT_A_F2_HALL_04"
+              ]
+            }
+          ]
+        },
+        {
+          "floor_number": 3,
+          "nodes": [
+            {
+              "id": "DEPT_A_F3_STAIR_01",
+              "type": "stairs",
+              "x": 105,
+              "y": 10,
+              "name": "DEPT_A Stairs F3",
+              "connections": [
+                "DEPT_A_F3_HALL_01",
+                "DEPT_A_F2_STAIR_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F3_ELEV_01",
+              "type": "elevator",
+              "x": 105,
+              "y": 20,
+              "name": "DEPT_A Elevator F3",
+              "connections": [
+                "DEPT_A_F3_HALL_02",
+                "DEPT_A_F2_ELEV_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F3_HALL_01",
+              "type": "hallway",
+              "x": 110,
+              "y": 10,
+              "connections": [
+                "DEPT_A_F3_STAIR_01",
+                "DEPT_A_F3_HALL_02",
+                "DEPT_A_F3_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_A_F3_HALL_02",
+              "type": "hallway",
+              "x": 110,
+              "y": 20,
+              "connections": [
+                "DEPT_A_F3_ELEV_01",
+                "DEPT_A_F3_HALL_01",
+                "DEPT_A_F3_HALL_04",
+                "DEPT_A_F3_REST_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F3_HALL_03",
+              "type": "hallway",
+              "x": 125,
+              "y": 10,
+              "connections": [
+                "DEPT_A_F3_HALL_01",
+                "DEPT_A_F3_SEMINAR_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F3_HALL_04",
+              "type": "hallway",
+              "x": 125,
+              "y": 20,
+              "connections": [
+                "DEPT_A_F3_HALL_02",
+                "DEPT_A_F3_SEMINAR_01"
+              ]
+            },
+            {
+              "id": "DEPT_A_F3_REST_01",
+              "type": "restroom",
+              "x": 110,
+              "y": 25,
+              "name": "DEPT_A Restroom F3",
+              "connections": [
+                "DEPT_A_F3_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_A_F3_SEMINAR_01",
+              "type": "seminar_hall",
+              "x": 125,
+              "y": 15,
+              "name": "Department A (CSE & IT Block) Seminar Hall 301",
+              "connections": [
+                "DEPT_A_F3_HALL_03",
+                "DEPT_A_F3_HALL_04"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "building_id": "DEPT_B",
+      "building_name": "Department B (ECE & Core Block)",
+      "floors": [
+        {
+          "floor_number": 1,
+          "nodes": [
+            {
+              "id": "DEPT_B_F1_STAIR_01",
+              "type": "stairs",
+              "x": 205,
+              "y": 10,
+              "name": "DEPT_B Stairs F1",
+              "connections": [
+                "DEPT_B_F1_HALL_01",
+                "DEPT_B_F2_STAIR_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_ELEV_01",
+              "type": "elevator",
+              "x": 205,
+              "y": 20,
+              "name": "DEPT_B Elevator F1",
+              "connections": [
+                "DEPT_B_F1_HALL_02",
+                "DEPT_B_F2_ELEV_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_HALL_01",
+              "type": "hallway",
+              "x": 210,
+              "y": 10,
+              "connections": [
+                "DEPT_B_F1_STAIR_01",
+                "DEPT_B_F1_HALL_02",
+                "DEPT_B_F1_HALL_03",
+                "DEPT_B_F1_ENTRANCE",
+                "DEPT_B_F1_CLASS_01",
+                "DEPT_B_F1_CLASS_02"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_HALL_02",
+              "type": "hallway",
+              "x": 210,
+              "y": 20,
+              "connections": [
+                "DEPT_B_F1_ELEV_01",
+                "DEPT_B_F1_HALL_01",
+                "DEPT_B_F1_HALL_04",
+                "DEPT_B_F1_REST_01",
+                "DEPT_B_F1_ENTRANCE",
+                "DEPT_B_F1_LAB_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_HALL_03",
+              "type": "hallway",
+              "x": 225,
+              "y": 10,
+              "connections": [
+                "DEPT_B_F1_HALL_01",
+                "DEPT_B_F1_CLASS_03",
+                "DEPT_B_F1_CLASS_04",
+                "DEPT_B_F1_CLASS_05"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_HALL_04",
+              "type": "hallway",
+              "x": 225,
+              "y": 20,
+              "connections": [
+                "DEPT_B_F1_HALL_02",
+                "DEPT_B_F1_LAB_02",
+                "DEPT_B_F1_LAB_03"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_REST_01",
+              "type": "restroom",
+              "x": 210,
+              "y": 25,
+              "name": "DEPT_B Restroom F1",
+              "connections": [
+                "DEPT_B_F1_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_ENTRANCE",
+              "type": "entrance",
+              "x": 200,
+              "y": 15,
+              "name": "Department B (ECE & Core Block) Main Entrance",
+              "connections": [
+                "LIB_F1_EXIT_B",
+                "DEPT_B_F1_HALL_01",
+                "DEPT_B_F1_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_CLASS_01",
+              "type": "classroom",
+              "x": 214,
+              "y": 5,
+              "name": "DEPT_B Classroom 101",
+              "connections": [
+                "DEPT_B_F1_HALL_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_CLASS_02",
+              "type": "classroom",
+              "x": 218,
+              "y": 5,
+              "name": "DEPT_B Classroom 102",
+              "connections": [
+                "DEPT_B_F1_HALL_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_CLASS_03",
+              "type": "classroom",
+              "x": 222,
+              "y": 5,
+              "name": "DEPT_B Classroom 103",
+              "connections": [
+                "DEPT_B_F1_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_CLASS_04",
+              "type": "classroom",
+              "x": 226,
+              "y": 5,
+              "name": "DEPT_B Classroom 104",
+              "connections": [
+                "DEPT_B_F1_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_CLASS_05",
+              "type": "classroom",
+              "x": 230,
+              "y": 5,
+              "name": "DEPT_B Classroom 105",
+              "connections": [
+                "DEPT_B_F1_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_LAB_01",
+              "type": "lab",
+              "x": 220,
+              "y": 25,
+              "name": "DEPT_B Lab 101",
+              "connections": [
+                "DEPT_B_F1_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_LAB_02",
+              "type": "lab",
+              "x": 225,
+              "y": 25,
+              "name": "DEPT_B Lab 102",
+              "connections": [
+                "DEPT_B_F1_HALL_04"
+              ]
+            },
+            {
+              "id": "DEPT_B_F1_LAB_03",
+              "type": "lab",
+              "x": 230,
+              "y": 25,
+              "name": "DEPT_B Lab 103",
+              "connections": [
+                "DEPT_B_F1_HALL_04"
+              ]
+            }
+          ]
+        },
+        {
+          "floor_number": 2,
+          "nodes": [
+            {
+              "id": "DEPT_B_F2_STAIR_01",
+              "type": "stairs",
+              "x": 205,
+              "y": 10,
+              "name": "DEPT_B Stairs F2",
+              "connections": [
+                "DEPT_B_F2_HALL_01",
+                "DEPT_B_F1_STAIR_01",
+                "DEPT_B_F3_STAIR_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_ELEV_01",
+              "type": "elevator",
+              "x": 205,
+              "y": 20,
+              "name": "DEPT_B Elevator F2",
+              "connections": [
+                "DEPT_B_F2_HALL_02",
+                "DEPT_B_F1_ELEV_01",
+                "DEPT_B_F3_ELEV_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_HALL_01",
+              "type": "hallway",
+              "x": 210,
+              "y": 10,
+              "connections": [
+                "DEPT_B_F2_STAIR_01",
+                "DEPT_B_F2_HALL_02",
+                "DEPT_B_F2_HALL_03",
+                "DEPT_B_F2_CLASS_01",
+                "DEPT_B_F2_CLASS_02"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_HALL_02",
+              "type": "hallway",
+              "x": 210,
+              "y": 20,
+              "connections": [
+                "DEPT_B_F2_ELEV_01",
+                "DEPT_B_F2_HALL_01",
+                "DEPT_B_F2_HALL_04",
+                "DEPT_B_F2_REST_01",
+                "DEPT_B_F2_LAB_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_HALL_03",
+              "type": "hallway",
+              "x": 225,
+              "y": 10,
+              "connections": [
+                "DEPT_B_F2_HALL_01",
+                "DEPT_B_F2_CLASS_03",
+                "DEPT_B_F2_CLASS_04",
+                "DEPT_B_F2_CLASS_05"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_HALL_04",
+              "type": "hallway",
+              "x": 225,
+              "y": 20,
+              "connections": [
+                "DEPT_B_F2_HALL_02",
+                "DEPT_B_F2_LAB_02",
+                "DEPT_B_F2_LAB_03"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_REST_01",
+              "type": "restroom",
+              "x": 210,
+              "y": 25,
+              "name": "DEPT_B Restroom F2",
+              "connections": [
+                "DEPT_B_F2_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_CLASS_01",
+              "type": "classroom",
+              "x": 214,
+              "y": 5,
+              "name": "DEPT_B Classroom 201",
+              "connections": [
+                "DEPT_B_F2_HALL_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_CLASS_02",
+              "type": "classroom",
+              "x": 218,
+              "y": 5,
+              "name": "DEPT_B Classroom 202",
+              "connections": [
+                "DEPT_B_F2_HALL_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_CLASS_03",
+              "type": "classroom",
+              "x": 222,
+              "y": 5,
+              "name": "DEPT_B Classroom 203",
+              "connections": [
+                "DEPT_B_F2_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_CLASS_04",
+              "type": "classroom",
+              "x": 226,
+              "y": 5,
+              "name": "DEPT_B Classroom 204",
+              "connections": [
+                "DEPT_B_F2_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_CLASS_05",
+              "type": "classroom",
+              "x": 230,
+              "y": 5,
+              "name": "DEPT_B Classroom 205",
+              "connections": [
+                "DEPT_B_F2_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_LAB_01",
+              "type": "lab",
+              "x": 220,
+              "y": 25,
+              "name": "DEPT_B Lab 201",
+              "connections": [
+                "DEPT_B_F2_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_LAB_02",
+              "type": "lab",
+              "x": 225,
+              "y": 25,
+              "name": "DEPT_B Lab 202",
+              "connections": [
+                "DEPT_B_F2_HALL_04"
+              ]
+            },
+            {
+              "id": "DEPT_B_F2_LAB_03",
+              "type": "lab",
+              "x": 230,
+              "y": 25,
+              "name": "DEPT_B Lab 203",
+              "connections": [
+                "DEPT_B_F2_HALL_04"
+              ]
+            }
+          ]
+        },
+        {
+          "floor_number": 3,
+          "nodes": [
+            {
+              "id": "DEPT_B_F3_STAIR_01",
+              "type": "stairs",
+              "x": 205,
+              "y": 10,
+              "name": "DEPT_B Stairs F3",
+              "connections": [
+                "DEPT_B_F3_HALL_01",
+                "DEPT_B_F2_STAIR_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F3_ELEV_01",
+              "type": "elevator",
+              "x": 205,
+              "y": 20,
+              "name": "DEPT_B Elevator F3",
+              "connections": [
+                "DEPT_B_F3_HALL_02",
+                "DEPT_B_F2_ELEV_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F3_HALL_01",
+              "type": "hallway",
+              "x": 210,
+              "y": 10,
+              "connections": [
+                "DEPT_B_F3_STAIR_01",
+                "DEPT_B_F3_HALL_02",
+                "DEPT_B_F3_HALL_03"
+              ]
+            },
+            {
+              "id": "DEPT_B_F3_HALL_02",
+              "type": "hallway",
+              "x": 210,
+              "y": 20,
+              "connections": [
+                "DEPT_B_F3_ELEV_01",
+                "DEPT_B_F3_HALL_01",
+                "DEPT_B_F3_HALL_04",
+                "DEPT_B_F3_REST_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F3_HALL_03",
+              "type": "hallway",
+              "x": 225,
+              "y": 10,
+              "connections": [
+                "DEPT_B_F3_HALL_01",
+                "DEPT_B_F3_SEMINAR_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F3_HALL_04",
+              "type": "hallway",
+              "x": 225,
+              "y": 20,
+              "connections": [
+                "DEPT_B_F3_HALL_02",
+                "DEPT_B_F3_SEMINAR_01"
+              ]
+            },
+            {
+              "id": "DEPT_B_F3_REST_01",
+              "type": "restroom",
+              "x": 210,
+              "y": 25,
+              "name": "DEPT_B Restroom F3",
+              "connections": [
+                "DEPT_B_F3_HALL_02"
+              ]
+            },
+            {
+              "id": "DEPT_B_F3_SEMINAR_01",
+              "type": "seminar_hall",
+              "x": 225,
+              "y": 15,
+              "name": "Department B (ECE & Core Block) Seminar Hall 301",
+              "connections": [
+                "DEPT_B_F3_HALL_03",
+                "DEPT_B_F3_HALL_04"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

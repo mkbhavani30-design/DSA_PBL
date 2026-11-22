@@ -10,34 +10,47 @@
 API_EXPORT int engine_init(const char* map_json_path);
 API_EXPORT void engine_shutdown(void);
 
+API_EXPORT int engine_load_state(const char* state_path);
+API_EXPORT int engine_save_state(const char* state_path);
+
 API_EXPORT int engine_get_room_count(void);
 API_EXPORT const char* engine_get_room_id(int slot);
 API_EXPORT const char* engine_get_room_name(int slot);
 API_EXPORT const char* engine_get_room_type(int slot);
 API_EXPORT const char* engine_get_room_building(int slot);
 API_EXPORT int engine_get_room_floor(int slot);
-API_EXPORT int engine_is_room_free(int slot);
 
-API_EXPORT int engine_book_room(int slot);
-API_EXPORT int engine_release_room(int slot);
-API_EXPORT int engine_book_by_str_id(const char* str_id);
-API_EXPORT int engine_release_by_str_id(const char* str_id);
-API_EXPORT void engine_set_library_full(int full);
+API_EXPORT int engine_is_room_free_at(int slot, const char* day_str, const char* shift_str);
+API_EXPORT const char* engine_get_slot_label(int slot, const char* day_str, const char* shift_str);
 
-/* Finds nearest free room from `start_str_id` (optionally excluding `exclude_building`).
-   Writes path node str_ids separated by '|' into `out_path_buf` and returns chosen slot (-1 if none). */
-API_EXPORT int engine_find_nearest_free_room(
-    const char* start_str_id,
-    const char* exclude_building,
-    const int* blocked_node_indices,
-    int blocked_count,
-    double* out_cost,
-    char* out_path_buf,
-    int out_path_buf_len
+API_EXPORT int engine_book_room_at(const char* room_id, const char* day_str, const char* shift_str);
+API_EXPORT int engine_release_room_at(const char* room_id, const char* day_str, const char* shift_str);
+API_EXPORT void engine_set_library_full_at(const char* day_str, const char* shift_str, int full);
+
+/* Returns 1 if a room was found, 0 otherwise. Writes JSON summary to `out_json_buf`. */
+API_EXPORT int engine_find_overflow_json(
+    const char* start_node_id,
+    const char* day_str,
+    const char* shift_str,
+    const char* prefer_building,
+    int prefer_stairs,
+    int prefer_lower_floor,
+    int auto_book,
+    char* out_json_buf,
+    int out_json_buf_len
 );
 
-/* Computes shortest A* path between any two string node IDs.
-   Returns number of nodes in path (-1 if unreachable). */
+/* Writes full rooms list (with schedule status for requested day/shift) as JSON. */
+API_EXPORT int engine_list_rooms_json(
+    const char* day_str,
+    const char* shift_str,
+    const char* building_filter,
+    const char* type_filter,
+    int only_free,
+    char* out_json_buf,
+    int out_json_buf_len
+);
+
 API_EXPORT int engine_shortest_path(
     const char* start_str_id,
     const char* target_str_id,
