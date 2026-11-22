@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Radar — Study Spaces</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="map-shell">
+    <canvas id="floorCanvas"></canvas>
+
+    <!-- Hovering card: Current Location + Top 3 Closest Rooms + Change Criteria -->
+    <aside class="hover-box">
+      <div class="loc-row">
+        <span class="loc-dot"></span>
+        <div class="loc-meta">
+          <span class="loc-label">Current Location</span>
+          <input
+            id="startNodeInput"
+            list="locationSuggestions"
+            type="text"
+            value="LIB_F1_HALL_01"
+            placeholder="Library, Dept A, Dept B, or Node ID"
+            aria-label="Current Location"
+          />
+          <datalist id="locationSuggestions">
+            <option value="LIB_F1_HALL_01">Central Library (Floor 1 Hall)</option>
+            <option value="LIB_F2_HALL_01">Central Library (Floor 2 Hall)</option>
+            <option value="DEPT_A_F1_HALL_01">Department A (Floor 1 Hall)</option>
+            <option value="DEPT_A_F2_HALL_01">Department A (Floor 2 Hall)</option>
+            <option value="DEPT_A_F3_HALL_01">Department A (Floor 3 Hall)</option>
+            <option value="DEPT_B_F1_HALL_01">Department B (Floor 1 Hall)</option>
+            <option value="DEPT_B_F2_HALL_01">Department B (Floor 2 Hall)</option>
+            <option value="DEPT_B_F3_HALL_01">Department B (Floor 3 Hall)</option>
+          </datalist>
+        </div>
+        <button id="changeCriteriaBtn" class="criteria-btn" type="button">Change Criteria</button>
+      </div>
+
+      <div id="criteriaPanel" class="criteria-panel hidden">
+        <div class="criteria-grid">
+          <select id="daySelect" class="pill-select">
+            <option value="MON">Monday</option>
+            <option value="TUE">Tuesday</option>
+            <option value="WED">Wednesday</option>
+            <option value="THU">Thursday</option>
+            <option value="FRI">Friday</option>
+          </select>
+
+          <select id="shiftSelect" class="pill-select">
+            <option value="MORNING">Morning</option>
+            <option value="AFTERNOON">Afternoon</option>
+          </select>
+
+          <select id="preferBuildingSelect" class="pill-select">
+            <option value="">Any Dept/Bldg</option>
+            <option value="DEPT_A">Dept A</option>
+            <option value="DEPT_B">Dept B</option>
+            <option value="LIB">Library</option>
+          </select>
+        </div>
+
+        <div class="criteria-checks">
+          <label><input type="checkbox" id="preferStairsCheck" /> Prefer Stairs</label>
+          <label><input type="checkbox" id="preferLowerFloorCheck" /> Lower Floor</label>
+          <label><input type="checkbox" id="autoBookCheck" /> Auto-book on pick</label>
+        </div>
+
+        <div class="criteria-actions">
+          <button id="applyCriteriaBtn" class="btn-primary" type="button">Update Criteria</button>
+          <button id="toggleLibFullBtn" class="btn-warn" type="button">Library Full</button>
+          <button id="releaseLibBtn" class="btn-ghost" type="button">Free Library</button>
+        </div>
+      </div>
+
+      <div class="top3-header">
+        <span>Top 3 Closest Available Rooms</span>
+        <span id="slotSummary" class="muted-xs"></span>
+      </div>
+
+      <div id="top3List" class="top3-list">
+        <div class="muted-xs">Finding closest spaces...</div>
+      </div>
+
+      <!-- Step-by-step navigation tracker -->
+      <div id="navHud" class="nav-hud hidden">
+        <div class="nav-hud-top">
+          <div>
+            <div id="navTargetTitle" class="nav-title"></div>
+            <div id="navStepCaption" class="nav-sub"></div>
+          </div>
+          <button id="exitNavBtn" class="mini-ghost" type="button">Overview</button>
+        </div>
+        <div class="nav-controls">
+          <button id="stepPrevBtn" class="nav-btn" type="button">&lsaquo; Back</button>
+          <button id="stepNextBtn" class="nav-btn primary" type="button">Move Next &rsaquo;</button>
+          <button id="autoWalkBtn" class="nav-btn" type="button">Auto Walk</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Top-right status -->
+    <div class="top-right-stack">
+      <div id="healthBadge" class="status-pill">Connecting...</div>
+    </div>
+
+    <!-- Bottom-right legend & reset -->
+    <div class="bottom-right-stack">
+      <div class="legend-card">
+        <span><i class="dot dot-bldg"></i>Building</span>
+        <span><i class="dot dot-you"></i>You</span>
+        <span><i class="dot dot-path"></i>Trail</span>
+        <span><i class="dot dot-goal"></i>Target Room</span>
+      </div>
+      <button id="resetViewBtn" class="reset-btn" type="button" title="Reset camera">&#8634;</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

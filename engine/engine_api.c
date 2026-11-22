@@ -5,6 +5,7 @@
 #include "timetable.h"
 
 #include <stdio.h>
+#include<float.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -275,4 +276,145 @@ API_EXPORT int engine_shortest_path(
     }
     free(path);
     return plen;
+}
+API_EXPORT int engine_top3_overflow_json(
+    const char* start_node_id,
+    const char* day_str,
+    const char* shift_str,
+    const char* prefer_building,
+    int prefer_stairs,
+    int prefer_lower_floor,
+    char* out_json_buf,
+    int out_json_buf_len
+) {
+    if (!g_graph || !g_tt || !out_json_buf || out_json_buf_len <= 0) return 0;
+
+    int d = tt_parse_day(day_str);
+    int s = tt_parse_shift(shift_str);
+
+    int start_idx = -1;
+    for (int i = 0; i < g_graph->num_nodes; i++) {
+        if (strcmp(g_graph->nodes[i].str_id, start_node_id) == 0) {
+            start_idx = i;
+            break;
+        }
+    }
+    if (start_idx == -1) start_idx = 0;
+
+    const char* avoid_type = prefer_stairs ? "elevator" : "stairs";
+    int* blocked = (int*)malloc((size_t)g_graph->num_nodes * sizeof(int));
+    int blocked_cnt = 0;
+    if (blocked) {
+        for (int i = 0; i < g_graph->num_nodes; i++) {
+            if (strcmp(g_graph->nodes[i].type, avoid_type) == 0) {
+                blocked[blocked_cnt++] = i;
+            }
+        }
+    }
+
+    typedef struct {
+        int room_idx;
+        int tier;
+        double cost;
+        double score;
+        int* path;
+        int path_len;
+    } RankedRoom;
+
+    RankedRoom top[3];
+    for (int k = 0; k < 3; k++) {
+        top[k].room_idx = -1;
+        top[k].tier = 4;
+        top[k].cost = DBL_MAX;
+        top[k].score = DBL_MAX;
+        top[k].path = NULL;
+        top[k].path_len = 0;
+    }
+
+    for (int r = 0; r < g_tt->count; r++) {
+        const RoomSchedule* rs = &g_tt->entries[r];
+        if (!tt_is_slot_free(g_tt, r, d, s)) continue;
+
+        const Node* rn = &g_graph->nodes[rs->node_idx];
+        int tier = 4;
+        double suit = 6.0;
+        if (strcmp(rn->type, "classroom") == 0) { tier = 1; suit = 0.0; }
+        else if (strcmp(rn->type, "seminar_hall") == 0) { tier = 3; suit = 4.0; }
+        else if (strcmp(rn->type, "lab") == 0) { tier = 2; suit = 9.0; }
+
+        int plen = 0;
+        int* path = cg_astar(g_graph, start_idx, rs->node_idx, blocked, blocked_cnt, &plen);
+        if (!path && blocked_cnt > 0) {
+            path = cg_astar(g_graph, start_idx, rs->node_idx, NULL, 0, &plen);
+        }
+        if (!path || plen <= 0) {
+            free(path);
+            continue;
+        }
+
+        double cost = cg_path_cost(g_graph, path, plen);
+        double score = cost + suit + ((tier - 1) * 12.0);
+        if (prefer_building && prefer_building[0] != '\0') {
+            score += (strcmp(rs->building_id, prefer_building) == 0) ? -8.0 : 4.0;
+        }
+        if (prefer_lower_floor) {
+            score += (double)(rs->floor - 1) * 1.5;
+        }
+
+        for (int k = 0; k < 3; k++) {
+            if (score < top[k].score) {
+                free(top[2].path);
+                for (int m = 2; m > k; m--) {
+                    top[m] = top[m - 1];
+                }
+                top[k].room_idx = r;
+                top[k].tier = tier;
+                top[k].cost = cost;
+                top[k].score = score;
+                top[k].path = path;
+                top[k].path_len = plen;
+                path = NULL;
+                break;
+            }
+        }
+        free(path);
+    }
+
+    free(blocked);
+
+    size_t pos = (size_t)snprintf(out_json_buf, (size_t)out_json_buf_len,
+                                  "{\"start\":\"%s\",\"day\":\"%s\",\"shift\":\"%s\",\"rooms\":[",
+                                  start_node_id, tt_day_name(d), tt_shift_name(s));
+    int first = 1;
+    int count = 0;
+    for (int k = 0; k < 3; k++) {
+        if (top[k].room_idx < 0) continue;
+        const RoomSchedule* rs = &g_tt->entries[top[k].room_idx];
+        int other_s = 1 - s;
+        int other_free = tt_is_slot_free(g_tt, top[k].room_idx, d, other_s);
+
+        pos += (size_t)snprintf(
+            out_json_buf + pos,
+            (size_t)out_json_buf_len - pos,
+            "%s{\"rank\":%d,\"room_id\":\"%s\",\"room_name\":\"%s\",\"room_type\":\"%s\","
+            "\"building_id\":\"%s\",\"floor\":%d,\"priority_tier\":%d,\"path_cost\":%.2f,"
+            "\"score\":%.2f,\"free_in_%s\":%s,\"path\":[",
+            first ? "" : ",",
+            k + 1, rs->room_id, rs->room_name, rs->room_type,
+            rs->building_id, rs->floor, top[k].tier, top[k].cost, top[k].score,
+            s == 0 ? "afternoon" : "morning",
+            other_free ? "true" : "false"
+        );
+        for (int p = 0; p < top[k].path_len; p++) {
+            pos += (size_t)snprintf(out_json_buf + pos, (size_t)out_json_buf_len - pos,
+                                    "%s\"%s\"", p == 0 ? "" : ",", g_graph->nodes[top[k].path[p]].str_id);
+        }
+        pos += (size_t)snprintf(out_json_buf + pos, (size_t)out_json_buf_len - pos, "]}");
+        first = 0;
+        count++;
+        free(top[k].path);
+    }
+
+    snprintf(out_json_buf + pos, (size_t)out_json_buf_len - pos, "],\"count\":%d}", count);
+    return count > 0 ? 1 : 0;
 }

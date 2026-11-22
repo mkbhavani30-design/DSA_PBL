@@ -251,6 +251,29 @@ static void handle_client(sock_t client, const char* map_path) {
         engine_list_rooms_json(day, shift, f_bldg, f_type, only_free, resp, sizeof(resp));
         send_json_response(client, 200, "OK", resp);
 
+    } else if (strcmp(method, "GET") == 0 && strcmp(path, "/api/top-rooms") == 0) {
+        char start_id[64] = "LIB_F1_HALL_01";
+        char day[16] = "MON", shift[16] = "MORNING";
+        char prefer_bldg[32] = "";
+        char stairs_str[16] = "", floor_str[16] = "";
+
+        get_query_param(query, "start", start_id, sizeof(start_id));
+        get_query_param(query, "day", day, sizeof(day));
+        get_query_param(query, "shift", shift, sizeof(shift));
+        get_query_param(query, "prefer_building", prefer_bldg, sizeof(prefer_bldg));
+        get_query_param(query, "prefer_stairs", stairs_str, sizeof(stairs_str));
+        get_query_param(query, "prefer_lower_floor", floor_str, sizeof(floor_str));
+
+        int prefer_stairs = (strcmp(stairs_str, "true") == 0 || strcmp(stairs_str, "1") == 0);
+        int prefer_lower_floor = (strcmp(floor_str, "true") == 0 || strcmp(floor_str, "1") == 0);
+
+        if (!engine_top3_overflow_json(start_id, day, shift, prefer_bldg,
+                                       prefer_stairs, prefer_lower_floor, resp, sizeof(resp))) {
+            send_json_response(client, 404, "Not Found", "{\"error\":\"No free rooms available\"}");
+        } else {
+            send_json_response(client, 200, "OK", resp);
+        }
+
     } else if (strcmp(method, "POST") == 0 && strcmp(path, "/api/rooms/book") == 0) {
         char room_id[64] = "", day[16] = "MON", shift[16] = "MORNING";
         parse_string_field(body, "day", day, sizeof(day));

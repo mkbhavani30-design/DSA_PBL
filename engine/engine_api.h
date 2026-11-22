@@ -40,6 +40,18 @@ API_EXPORT int engine_find_overflow_json(
     int out_json_buf_len
 );
 
+/* Writes JSON array of up to top 3 best free overflow rooms with their A* paths. */
+API_EXPORT int engine_top3_overflow_json(
+    const char* start_node_id,
+    const char* day_str,
+    const char* shift_str,
+    const char* prefer_building,
+    int prefer_stairs,
+    int prefer_lower_floor,
+    char* out_json_buf,
+    int out_json_buf_len
+);
+
 /* Writes full rooms list (with schedule status for requested day/shift) as JSON. */
 API_EXPORT int engine_list_rooms_json(
     const char* day_str,

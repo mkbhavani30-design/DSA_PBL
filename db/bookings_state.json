@@ -1,11 +1,12 @@
 {
-  "booked_room_ids": [
-    "LIB_F1_STUDY_01",
-    "LIB_F1_STUDY_02",
-    "LIB_F1_STUDY_03",
-    "LIB_F2_STUDY_01",
-    "LIB_F2_STUDY_02",
-    "LIB_F2_STUDY_03",
-    "DEPT_A_F1_CLASS_02"
+  "bookings": [
+    {"room_id":"LIB_F1_STUDY_01","day":"WED","shift":"AFTERNOON"},
+    {"room_id":"LIB_F1_STUDY_02","day":"WED","shift":"AFTERNOON"},
+    {"room_id":"LIB_F1_STUDY_03","day":"WED","shift":"AFTERNOON"},
+    {"room_id":"LIB_F2_STUDY_01","day":"WED","shift":"AFTERNOON"},
+    {"room_id":"LIB_F2_STUDY_02","day":"WED","shift":"AFTERNOON"},
+    {"room_id":"LIB_F2_STUDY_03","day":"WED","shift":"AFTERNOON"},
+    {"room_id":"DEPT_B_F1_CLASS_02","day":"MON","shift":"MORNING"},
+    {"room_id":"DEPT_B_F2_CLASS_02","day":"MON","shift":"MORNING"}
   ]
 }
