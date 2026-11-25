@@ -101,9 +101,3 @@ gcc -O2 -std=c11 -o main main.c segment_tree.c campus.c heap.c campus_router.c m
 - Only three buildings are covered
 
 Planned: real timetable import, live occupancy sensing, more buildings, mobile app.
-
-## Authors
-
-[Add team member names and roll numbers]
-
-Guide: [Add faculty name]
