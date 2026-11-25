@@ -1,0 +1,7 @@
+# Build outputs
+*.exe
+*.dll
+*.o
+test_engine
+main
+campus_backend
